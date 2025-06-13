@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "target": "es5",
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"], // Cet alias est le plus général et couvre les chemins à la racine
+      // Les alias spécifiques ci-dessous sont optionnels si "@/*" couvre déjà vos besoins,
+      // mais les garder peut ajouter de la clarté pour certains projets.
+      // Si vos dossiers 'lib', 'models', 'components' sont directement à la racine,
+      // alors "@/*" : ["./*"] est suffisant.
+      "@lib/*": ["./lib/*"],
+      "@models/*": ["./models/*"],
+      "@components/*": ["./components/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "types/**/*.d.ts" // <-- LIGNE CRUCIALE : Assure que TypeScript lit vos fichiers de types globaux comme global.d.ts
+  ],
+  "exclude": ["node_modules"]
+}
