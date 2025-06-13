@@ -1,30 +1,20 @@
-// models/User.ts
-import mongoose, { Schema, models, model, Document } from 'mongoose';
+// Exemple très simplifié de use-mobile.tsx
+import { useState, useEffect } from 'react';
 
-export interface IUser extends Document {
-  email: string;
-  password: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+const useIsMobile = () => {
+    const [isMobile, setIsMobile] = useState(false);
 
-const UserSchema = new Schema<IUser>({
-  email: {
-    type: String,
-    required: [true, 'Veuillez fournir un email.'],
-    unique: true,
-    lowercase: true,
-    trim: true,
-  },
-  password: {
-    type: String,
-    required: [true, 'Veuillez fournir un mot de passe.'],
-    minlength: [6, 'Le mot de passe doit contenir au moins 6 caractères.'],
-  },
-}, {
-  timestamps: true,
-});
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768); // Exemple pour mobile si largeur <= 768px
+        };
 
-const User = (models.User || model<IUser>('User', UserSchema)) as mongoose.Model<IUser>;
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
-export default User;
+    return isMobile;
+};
+
+export default useIsMobile; // DOIT ÊTRE UN EXPORT DEFAULT
