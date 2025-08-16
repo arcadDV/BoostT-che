@@ -1,17 +1,17 @@
 // components/login-form.tsx
 'use client'; // ESSENTIEL pour un composant interactif côté client
 
-import * as React from 'react'; // Utilisez React.* pour le JSX
+import * as React from 'react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation'; // Pour la redirection après connexion
 
-// Importez vos composants UI si vous les utilisez (ex: Card, Button, Input, Label)
+// Importez vos composants UI si vous les utilisez (décommentez si nécessaire)
 // import { Button } from "@/components/ui/button";
 // import { Input } from "@/components/ui/input";
 // import { Label } from "@/components/ui/label";
 // import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
-export function LoginForm() { // <-- EXPORT NOMMÉ ICI
+export function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -19,10 +19,12 @@ export function LoginForm() { // <-- EXPORT NOMMÉ ICI
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setError(null); // Réinitialise les erreurs
+    setError(null); // Réinitialise les erreurs avant une nouvelle tentative
 
     try {
-      const response = await fetch('/api/login', {
+      // MODIFICATION CLÉ : Assurez-vous que l'URL de votre backend est correcte.
+      // Le backend tourne sur http://localhost:5000 d'après nos logs précédents.
+      const response = await fetch('http://localhost:5000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -34,12 +36,21 @@ export function LoginForm() { // <-- EXPORT NOMMÉ ICI
 
       if (response.ok) {
         console.log('Connexion réussie:', data.message);
-        router.push('/dashboard'); // Redirigez vers le tableau de bord
+        // Optionnel : Stocker le token d'authentification si votre backend en renvoie un (e.g., JWT)
+        // Ceci est crucial pour les pages protégées. Si votre backend renvoie un token dans 'data.token', vous pouvez le stocker.
+        // Exemple : localStorage.setItem('authToken', data.token);
+
+        // REDIRECTION : Vers la page de gestion des tâches
+        // REMPLACEZ '/dashboard' par le chemin réel de votre page de gestion des tâches
+        // Par exemple, si votre page est dans app/tasks/page.tsx, utilisez '/tasks'
+        router.push('/dashboard');
       } else {
-        setError(data.message || 'Erreur lors de la connexion.');
+        // Affiche le message d'erreur du backend
+        setError(data.message || 'Email ou mot de passe incorrect.');
         console.error('Erreur de connexion:', data.message);
       }
     } catch (err: any) {
+      // Gère les erreurs réseau (ex: backend non démarré, problème de CORS)
       setError('Erreur réseau ou autre lors de la connexion: ' + err.message);
       console.error('Erreur de connexion:', err);
     }
@@ -57,6 +68,7 @@ export function LoginForm() { // <-- EXPORT NOMMÉ ICI
           name="email"
           type="email"
           required
+          autoComplete="email" // Ajout de l'attribut autocomplete
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -69,6 +81,7 @@ export function LoginForm() { // <-- EXPORT NOMMÉ ICI
           name="password"
           type="password"
           required
+          autoComplete="current-password" // Ajout de l'attribut autocomplete
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
